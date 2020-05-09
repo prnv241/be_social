@@ -51,8 +51,10 @@ exports.signup = (req, res) => {
       console.error(err);
       if (err.code === 'auth/email-already-in-use') {
         return res.status(400).json({ email: 'Email is already in use' });
+      } else if (err.code === 'auth/weak-password') {
+        return res.status(400).json({ password: 'Password should be minimum 6 characters in length', confirmPassword: 'Password should be minimum 6 characters in length' });
       } else {
-        return res.status(500).json({ general: 'Something went wrong, please try again' });
+        return res.status(500).json({ general: err.code });
       }
     })
 }
@@ -63,8 +65,8 @@ exports.login = (req, res) => {
     password: req.body.password
   };
 
-  const { valid, errors } = validateLogin(user);
-  if (!valid) return res.status(400).json(errors);
+  const { valids, errorss } = validateLogin(user);
+  if (!valids) return res.status(400).json(errorss);
 
   firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then(data => {
@@ -75,8 +77,14 @@ exports.login = (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-        return res.status(403).json({ general: 'Wrong Credentials! Please try again' })
+      if (err.code === 'auth/wrong-password') {
+        return res.status(403).json({ password: 'Wrong Password! Please try again' })
+      }
+      if (err.code === 'auth/user-not-found') {
+        return res.status(403).json({ email: 'User does not exist, Signup instead!' })
+      }
+      if (err.code === 'auth/invalid-email') {
+        return res.status(403).json({ email: 'Please enter a valid email address!' })
       }
       return res.status(500).json({ error: err.code });
     })
