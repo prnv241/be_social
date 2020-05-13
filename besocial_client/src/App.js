@@ -20,7 +20,7 @@ import Navbar from "./components/Navbar";
 import AuthRoute from "./util/AuthRoute";
 
 axios.defaults.baseURL =
-  "http://us-central1-besocial-307fb.cloudfunctions.net/api";
+  "https://us-central1-besocial-307fb.cloudfunctions.net/api";
 
 const theme = createMuiTheme({
   palette: {
