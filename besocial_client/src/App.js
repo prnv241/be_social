@@ -19,8 +19,7 @@ import user from "./pages/user";
 import Navbar from "./components/Navbar";
 import AuthRoute from "./util/AuthRoute";
 
-axios.defaults.baseURL =
-  "https://us-central1-besocial-307fb.cloudfunctions.net/api";
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 const theme = createMuiTheme({
   palette: {
